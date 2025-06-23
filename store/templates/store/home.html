@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creative Delights | Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">Creative Delights</h1>
+    <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
+    <a href="{% url 'view_cart' %}" class="relative">
+      🛒
+      {% if cart_item_count > 0 %}
+        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+          {{ cart_item_count }}
+        </span>
+      {% endif %}
+    </a>
+    
+  </header>
+
+  <section class="p-6">
+    <h2 class="text-xl font-semibold mb-4 text-center">Latest Shoes</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% if messages %}
+  <div id="flashMessage" class="fixed top-4 left-0 w-full z-50 flex justify-center">
+    <div class="max-w-xl w-full mx-4">
+      {% for message in messages %}
+        <div class="text-white p-3 text-center rounded shadow-md {{ message.tags|yesno:'bg-green-500,bg-red-500' }} mb-2">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+
+
+      {% for shoe in shoes %}
+      <div>
+        <h2>{{ shoe.name }}</h2>
+        <p>Price: KES {{ shoe.price }}</p>
+        <img src="{% static 'images/shoe1.jpg' %}" alt="{{ shoe.name }}" />
+        <a href="{% url 'add_to_cart' shoe.id %}">Add to Cart</a>
+        <img src="{% static 'images/shoe2.jpg' %}" alt="{{ shoe.name }}" />
+        <a href="{% url 'add_to_cart' shoe.id %}">Add to Cart</a>
+      </div>
+    {% empty %}
+      <p>No shoes available.</p>
+    {% endfor %}
+    
+    
+    </div>
+  </section>
+
+  <script>
+    function promptLogin() {
+      alert("Please login or register to add items to your cart.");
+      window.location.href = "{% url 'login' %}";
+    }
+    setTimeout(() => {
+      const msg = document.getElementById('flashMessage');
+      if (msg) msg.style.display = 'none';
+    }, 2000);
+  </script>
+
+</body>
+</html>

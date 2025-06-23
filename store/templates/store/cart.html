@@ -1,0 +1,83 @@
+{% load static %}
+{% load math_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Cart | Creative Delights</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center">
+
+  <header class="bg-white shadow-md w-full p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">🛒 My Cart</h1>
+    <a href="{% url 'home' %}" class="text-blue-600 hover:underline">← Continue Shopping</a>
+  </header>
+
+  {% if messages %}
+    <div class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50">
+      {% for message in messages %}
+        <div class="text-white p-2 px-4 rounded {{ message.tags|yesno:'bg-green-500,bg-red-500' }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="w-full max-w-4xl mt-8 px-4">
+    {% if cart_items %}
+      <div class="grid grid-cols-1 gap-4">
+        {% for item in cart_items %}
+        <div class="bg-white rounded shadow p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold">{{ item.shoe.name }}</h2>
+              <p>Price per unit: KES <span class="unit-price">{{ item.shoe.price }}</span></p>
+              <form action="{% url 'update_cart_quantity' item.id %}" method="POST" class="mt-2 flex items-center gap-2 update-form">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                       class="border border-gray-300 rounded px-2 py-1 w-20 text-center quantity-input" data-price="{{ item.shoe.price }}" />
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                  Update
+                </button>
+              </form>
+              <p>Total: KES <span class="total-price">{{ item.shoe.price|mul:item.quantity }}</span></p>
+            </div>
+          
+            <form action="{% url 'remove_from_cart' item.shoe.id %}" method="POST" onsubmit="return confirmRemove(event)">
+              {% csrf_token %}
+              <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                Remove From Cart
+              </button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-gray-600">Your cart is empty.</p>
+    {% endif %}
+  </main>
+
+  <script>
+    function confirmRemove(event) {
+      const confirmed = confirm("Are you sure you want to remove this item from your cart?");
+      if (!confirmed) {
+        event.preventDefault();
+        return false;
+      }
+      return true;
+    }
+
+  document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const quantity = e.target.value;
+      const price = parseFloat(e.target.dataset.price);
+      const totalPriceElem = e.target.closest('div').querySelector('.total-price');
+      if (quantity && price && totalPriceElem) {
+        totalPriceElem.textContent = (quantity * price).toFixed(2);
+      }
+    });
+  });
+  </script>
+</body>
+</html>
