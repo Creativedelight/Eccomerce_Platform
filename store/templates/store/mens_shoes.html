@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Men's Shoes{% endblock %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4 text-center">Men's Shoes</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  {% for shoe in shoes %}
+    <div class="bg-white p-4 rounded shadow">
+      <img src="{% static 'images/shoe' %}{{ forloop.counter }}.jpg" alt="{{ shoe.name }}" class="w-full h-48 object-cover mb-2" />
+      <h3 class="font-bold">{{ shoe.name }}</h3>
+      <p>Price: KES {{ shoe.price }}</p>
+      <a href="{% url 'add_to_cart' shoe.id %}" class="block mt-2 bg-blue-600 text-white py-1 rounded text-center">Add to Cart</a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

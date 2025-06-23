@@ -1,71 +1,121 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Creative Delights | Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+  <link rel="icon" href="{% static 'favicon.ico' %}" />
+  <style>
+  
+.cart {
+  padding: 12.5px 20px;
+  border: 0;
+  border-radius: 50px;
+  background-color: #2ba8fb;
+  color: #ffffff;
+  font-weight: Bold;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+}
 
-  <header class="bg-white shadow-md p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-gray-800">Creative Delights</h1>
-    <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a>
-    <a href="{% url 'view_cart' %}" class="relative">
-      🛒
-      {% if cart_item_count > 0 %}
-        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+.cart:hover {
+  background-color: #6fc5ff;
+  box-shadow: 0 0 20px #6fc5ff50;
+  transform: scale(1.1);
+}
+
+.cart:active {
+  background-color: #3d94cf;
+  transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md px-6 py-4 flex flex-wrap justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-700 tracking-wide">Creative Delights</h1>
+
+    <nav class="flex items-center gap-4 mt-2 sm:mt-0">
+      <a href="{% url 'mens_shoe' %}" class="hover:text-blue-600 font-medium">Men</a>
+      <a href="{% url 'womens_shoe' %}" class="hover:text-blue-600 font-medium">Women</a>
+
+      <div class="relative group">
+        <button class="font-medium hover:text-blue-600 focus:outline-none">Pages ▼</button>
+        <div class="absolute hidden group-hover:block mt-2 w-40 bg-white shadow-md rounded z-50">
+          <a href="{% url 'blog' %}" class="block px-4 py-2 hover:bg-gray-100">Blog</a>
+          <a href="{% url 'contact' %}" class="block px-4 py-2 hover:bg-gray-100">Contact</a>
+          <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-gray-100">About</a>
+        </div>
+      </div>
+
+      <a href="{% url 'login' %}" class="hover:text-blue-600 font-medium">Login</a>
+      <a href="{% url 'logout' %}" class="hover:text-blue-600 font-medium">Logout</a>
+
+      <a href="{% url 'view_cart' %}" class="relative text-xl">
+        🛒
+        {% if cart_item_count > 0 %}
+        <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
           {{ cart_item_count }}
         </span>
-      {% endif %}
-    </a>
-    
+        {% endif %}
+      </a>
+    </nav>
   </header>
 
-  <section class="p-6">
-    <h2 class="text-xl font-semibold mb-4 text-center">Latest Shoes</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {% if messages %}
-  <div id="flashMessage" class="fixed top-4 left-0 w-full z-50 flex justify-center">
-    <div class="max-w-xl w-full mx-4">
-      {% for message in messages %}
-        <div class="text-white p-3 text-center rounded shadow-md {{ message.tags|yesno:'bg-green-500,bg-red-500' }} mb-2">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-{% endif %}
-
-
-
-      {% for shoe in shoes %}
-      <div>
-        <h2>{{ shoe.name }}</h2>
-        <p>Price: KES {{ shoe.price }}</p>
-        <img src="{% static 'images/shoe1.jpg' %}" alt="{{ shoe.name }}" />
-        <a href="{% url 'add_to_cart' shoe.id %}">Add to Cart</a>
-        <img src="{% static 'images/shoe2.jpg' %}" alt="{{ shoe.name }}" />
-        <a href="{% url 'add_to_cart' shoe.id %}">Add to Cart</a>
+  <!-- Flash Messages -->
+  {% if messages %}
+  <div id="flashMessage" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50">
+    {% for message in messages %}
+      <div class="bg-green-500 text-white px-4 py-2 rounded shadow-md mb-2 text-sm animate-pulse">
+        {{ message }}
       </div>
-    {% empty %}
-      <p>No shoes available.</p>
     {% endfor %}
-    
-    
-    </div>
+  </div>
+  {% endif %}
+
+  <!-- Hero -->
+  <section class="bg-blue-100 text-center py-12 px-4">
+    <h2 class="text-3xl font-bold text-blue-800 mb-2">Step Into Style</h2>
+    <p class="text-gray-700 text-lg">Shop the latest collections for men and women</p>
   </section>
 
+  <!-- Products -->
+  <main class="p-6 max-w-7xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">Latest Shoes</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {% for shoe in shoes %}
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <img src="{% static 'images/shoe' %}{{ forloop.counter }}.jpg" alt="{{ shoe.name }}" class="h-48 w-full object-cover rounded mb-3" />
+        <h3 class="font-bold text-gray-800 text-lg mb-1">{{ shoe.name }}</h3>
+        <p class="text-gray-600 mb-2">KES {{ shoe.price }}</p>
+        <div class="cart">
+        <a href="{% url 'add_to_cart' shoe.id %}">Add to Cart</a>
+      </div>
+  </div>
+
+      {% empty %}
+      <p class="col-span-full text-center text-gray-500">No shoes available at the moment.</p>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer class="bg-white text-center py-4 mt-10 shadow-inner">
+    <p class="text-sm text-gray-500">© {{ now.year }} Creative Delights. All rights reserved.</p>
+  </footer>
+
   <script>
-    function promptLogin() {
-      alert("Please login or register to add items to your cart.");
-      window.location.href = "{% url 'login' %}";
-    }
+    
     setTimeout(() => {
       const msg = document.getElementById('flashMessage');
       if (msg) msg.style.display = 'none';
     }, 2000);
   </script>
-
 </body>
 </html>
