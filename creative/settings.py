@@ -22,8 +22,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = 'faygeorges221@gmail.com'
-EMAIL_HOST_PASSWORD = 'auahcmnqbeszpxvu' 
+EMAIL_HOST_USER = 'your email'
+EMAIL_HOST_PASSWORD = 'your password' 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Application definition
